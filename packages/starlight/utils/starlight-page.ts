@@ -112,10 +112,14 @@ export async function generateStarlightPageRouteData({
 	props: StarlightPageProps;
 	context: RouteDataContext;
 }): Promise<StarlightRouteData> {
+	console.log('🚀 generateStarlightPageRouteData called');
+
 	const { frontmatter, ...routeProps } = props;
 	const { url } = context;
 	const slug = urlToSlug(url);
 	const pageFrontmatter = await getStarlightPageFrontmatter(frontmatter);
+
+	const blocks = pageFrontmatter.blocks ?? [];
 	const id = project.legacyCollections ? `${stripLeadingAndTrailingSlashes(slug)}.md` : slug;
 	const localeData = slugToLocaleData(slug);
 	const sidebar = props.sidebar
@@ -130,6 +134,7 @@ export async function generateStarlightPageRouteData({
 		filePath: `${getCollectionPathFromRoot('docs', project)}/${stripLeadingAndTrailingSlashes(slug)}.md`,
 		data: {
 			...pageFrontmatter,
+			blocks,
 			sidebar: {
 				attrs: {},
 				hidden: false,
@@ -174,6 +179,9 @@ export async function generateStarlightPageRouteData({
 		slug,
 		toc: getToC(pageProps),
 	};
+
+	console.log('pageFrontmatter.blocks:', pageFrontmatter.blocks);
+	console.log('entry.data.blocks:', pageDocsEntry.data.blocks);
 	return routeData;
 }
 

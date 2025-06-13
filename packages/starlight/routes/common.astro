@@ -1,6 +1,7 @@
 ---
 import { render } from 'astro:content';
 import Page from '../components/Page.astro';
+import CustomPage from '../components/CustomPage.astro';
 import { getRoute, useRouteData } from '../utils/routing/data';
 import { attachRouteDataAndRunMiddleware } from '../utils/routing/middleware';
 
@@ -18,6 +19,15 @@ const renderResult = await render(route.entry);
 await attachRouteDataAndRunMiddleware(Astro, await useRouteData(Astro, route, renderResult));
 
 const { Content, entry } = Astro.locals.starlightRoute;
+// console.log('bla: ', Astro.locals.starlightRoute);
+const blocks = entry?.data?.blocks ?? [];
+const hasBlocks = Array.isArray(blocks) && blocks.length > 0;
 ---
 
-<Page>{Content && <Content frontmatter={entry.data} />}</Page>
+{
+	hasBlocks ? (
+		<CustomPage blocks={blocks}>{Content && <Content frontmatter={entry.data} />}</CustomPage>
+	) : (
+		<Page>{Content && <Content frontmatter={entry.data} />}</Page>
+	)
+}
