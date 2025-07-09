@@ -1,8 +1,10 @@
 ---
 import Icon from '../user-components/Icon.astro';
 import TableOfContentsList from './TableOfContents/TableOfContentsList.astro';
+import { getTocFromEntry } from '../src/lib/getTocFromEntry';
 
-const { toc } = Astro.locals.starlightRoute;
+const entry = Astro.locals.starlightRoute.entry;
+const toc = await getTocFromEntry(entry);
 ---
 
 {
@@ -18,7 +20,7 @@ const { toc } = Astro.locals.starlightRoute;
 						<span class="display-current" />
 					</summary>
 					<div class="dropdown">
-						<TableOfContentsList toc={toc.items} isMobile />
+						<TableOfContentsList toc={toc} isMobile />
 					</div>
 				</details>
 			</nav>

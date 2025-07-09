@@ -1,0 +1,44 @@
+---
+import { unified } from 'unified';
+import remarkParse from 'remark-parse';
+import remarkRehype from 'remark-rehype';
+import rehypeSlug from 'rehype-slug';
+// import rehypeHeadings from 'rehype-autolink-headings';
+import rehypeWrapHeadingsWithLink from './rehypeWrapHeadingsWithLink.js';
+
+import rehypeSanitize from 'rehype-sanitize';
+import rehypeStringify from 'rehype-stringify';
+import { defaultSchema } from 'hast-util-sanitize';
+import { h } from 'hastscript';
+
+const { content } = Astro.props;
+
+const customSchema = {
+	...defaultSchema,
+	attributes: {
+		...defaultSchema.attributes,
+		h1: [['id']],
+		h2: [['id']],
+		h3: [['id']],
+		h4: [['id']],
+		h5: [['id']],
+		h6: [['id']],
+	},
+};
+
+const result = await unified()
+	.use(remarkParse)
+	.use(remarkRehype)
+	.use(rehypeSlug)
+	.use(rehypeWrapHeadingsWithLink)
+	// .use(rehypeSanitize)
+	// .use(rehypeSanitize, customSchema)
+	.use(rehypeStringify)
+	.process(content);
+
+const html = result.toString();
+
+import '../../style/markdown.css';
+---
+
+<div class="sl-markdown-content" set:html={html} />

@@ -1,7 +1,9 @@
 ---
+import { getTocFromEntry } from '../src/lib/getTocFromEntry';
 import TableOfContentsList from './TableOfContents/TableOfContentsList.astro';
 
-const { toc } = Astro.locals.starlightRoute;
+const entry = Astro.locals.starlightRoute.entry;
+const toc = await getTocFromEntry(entry);
 ---
 
 {
@@ -9,7 +11,7 @@ const { toc } = Astro.locals.starlightRoute;
 		<starlight-toc data-min-h={toc.minHeadingLevel} data-max-h={toc.maxHeadingLevel}>
 			<nav aria-labelledby="starlight__on-this-page">
 				<h2 id="starlight__on-this-page">{Astro.locals.t('tableOfContents.onThisPage')}</h2>
-				<TableOfContentsList toc={toc.items} />
+				<TableOfContentsList toc={toc} />
 			</nav>
 		</starlight-toc>
 	)

@@ -28,13 +28,15 @@ import Sidebar from 'virtual:starlight/components/Sidebar';
 import SkipLink from 'virtual:starlight/components/SkipLink';
 import ThemeProvider from 'virtual:starlight/components/ThemeProvider';
 import TwoColumnContent from 'virtual:starlight/components/TwoColumnContent';
-
 import { Steps, Code, FileTree } from '../components';
 
 import printHref from '../style/print.css?url&no-inline';
 
 const { starlightRoute } = Astro.locals;
-const blocks = starlightRoute.entry.data?.blocks ?? [];
+import type { CollectionEntry } from 'astro:content';
+// const entry: CollectionEntry<'pages'> = starlightRoute.entry;
+// console.log('entry: ', entry);
+// const blocks = starlightRoute.entry.data?.blocks ?? [];
 
 const pagefindEnabled =
 	starlightRoute.entry.slug !== '404' &&
@@ -43,11 +45,19 @@ const pagefindEnabled =
 
 const htmlDataAttributes: DOMStringMap = { 'data-theme': 'dark' };
 if (Boolean(starlightRoute.toc)) htmlDataAttributes['data-has-toc'] = '';
-if (starlightRoute.hasSidebar) htmlDataAttributes['data-has-sidebar'] = '';
+if (starlightRoute.hasSidebes'> = starlightRoute.entry;
+// console.log('entry: ', entry);
+const blocks = starligar) htmlDataAttributes['data-has-sidebar'] = '';
 if (Boolean(starlightRoute.entry.data.hero)) htmlDataAttributes['data-has-hero'] = '';
 
 const mainDataAttributes: DOMStringMap = {};
 if (pagefindEnabled) mainDataAttributes['data-pagefind-body'] = '';
+
+import { RenderTree } from '../src/lib/renderTree.tsx';
+import { parseIndentedTree } from '../src/lib/parseIndentedTree.ts';
+// import PreactMarkdown from '../src/lib/PreactMarkdown.tsx';
+import AstroMarkdown from '../src/lib/AstroMarkdown.astro';
+
 ---
 
 <html lang={starlightRoute.lang} dir={starlightRoute.dir} {...htmlDataAttributes}>
@@ -113,28 +123,63 @@ if (pagefindEnabled) mainDataAttributes['data-pagefind-body'] = '';
 									{starlightRoute.entry.data.draft && <DraftContentNotice />}
 									{starlightRoute.isFallback && <FallbackContentNotice />}
 								</ContentPanel>
+								<!-- <ContentPanel>{mergeRteBlocks(entry)}</ContentPanel> -->
 								<ContentPanel>
-									{blocks ? (
-										blocks.map((block) => {
+									{starlightRoute.entry.data.blocks ? (
+										starlightRoute.entry.data.blocks.map((block) => {
 											switch (block.type) {
+												case 'rte':
+													// console.log('block:', block);
+													return (
+														<MarkdownContent>
+															<AstroMarkdown content={block.content} />
+														</MarkdownContent>
+													);
 												case 'code':
+													console.log('block:', block);
 													return <Code {...block} />;
 												case 'steps':
+													console.log('block:', block);
 													return (
 														<Steps title="Installation Steps">
-															<ol>
-																{block.steps.map((step) => (
-																	<li key={step.title}>
-																		<h4>{step.title}</h4>
-																		<p>{step.content}</p>
-																		<Code code={step.code} />
-																	</li>
-																))}
-															</ol>
+    														<ol>
+                                                                {block.steps.map((step, index) => (
+                                                                    <li key={index}>
+                                                                        <h4>{step.title}</h4>
+                                                                        <p>{step.content}</p>
+                                                                        {step.code && <Code code={step.code} lang={step.lang} />}
+                                                                        {step.filetree && (
+                                                                            <FileTree>
+                                                                                <RenderTree tree={parseIndentedTree(step.filetree?.tree)} />
+                                                                            </FileTree>
+                                                                        )}
+                                                                    </li>
+                                                                ))}
+                                                            </ol>
 														</Steps>
 													);
 												case 'filetree':
-													return '<FileTree {...block} />';
+													// const parsedTree = parseIndentedTree(block.tree);
+													// <ul>{renderTree(parsedTree)}</ul>
+													// <FileTree title={block.title}></FileTree>
+													// <FileTree>{renderTree(parseIndentedTree(block.tree))}</FileTree>
+													//
+													// <FileTree>{indentToMarkdownList(block.tree)}</FileTree>
+													//
+													//
+
+													// console.log(JSON.stringify(parseIndentedTree(block.tree), null, 2));
+													// {debugIndentation(block.tree)}
+													// console.log('block:', block);
+
+													return (
+														<div>
+															<FileTree>
+																<RenderTree tree={parseIndentedTree(block.tree)} />
+															</FileTree>
+														</div>
+													);
+
 												default:
 													return null;
 											}
