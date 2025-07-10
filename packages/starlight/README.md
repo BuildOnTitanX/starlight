@@ -2,7 +2,20 @@
 
 # Starlight with pages-cms support (frontmatter-only-files)
 
+<<<<<<< Updated upstream
 ## NOTE: This is a Starlight fork with the aim to also support a view with frontmatter-only-files produced by pages-cms. So some of the main Components are supported this way (eg. RTE, Code, Steps and FileTree) for rendering there is a second Page (CustomPage.astro), the basic functionality is kept and managed by the new src/lib folder. There we accomplish that still eg. the ToC works or the FileTree still can be used.
+=======
+NOTE: This is a Starlight fork with the aim to also support a view with frontmatter-only-files produced by pages-cms. So some of the main Components are supported this way (eg. RTE, Code, Steps and FileTree) for rendering there is a second Page (CustomPage.astro), the basic functionality is kept and managed by the new src/lib folder. There we accomplish that still eg. the ToC works or the FileTree still can be used.
+
+NOTE2: This will be further developed in the branch: pagesCmsFileSupport to be able to update the main branch regularly.
+
+Workflow:
+
+- git remote add upstream https://github.com/withastro/starlight.git
+- git checkout pagesCmsFileSupport
+- git fetch upstream
+- git rebase upstream/main # or merge
+>>>>>>> Stashed changes
 
 ## TODO: Add a Content Example and the base Pages-CMS config to this REPO as well. (the Content for the main project will be managed by another Astro-Page)
 
