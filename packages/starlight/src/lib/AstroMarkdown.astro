@@ -1,0 +1,22 @@
+---
+import { unified } from 'unified';
+import remarkParse from 'remark-parse';
+import remarkRehype from 'remark-rehype';
+import rehypeSlug from 'rehype-slug';
+import rehypeStringify from 'rehype-stringify';
+import rehypeSanitize from 'rehype-sanitize';
+
+const { content } = Astro.props;
+
+const result = await unified()
+	.use(remarkParse)
+	.use(remarkRehype)
+	.use(rehypeSlug)
+	.use(rehypeSanitize)
+	.use(rehypeStringify)
+	.process(content);
+
+const html = result.toString();
+---
+
+<div class="markdown" set:html={html} />
