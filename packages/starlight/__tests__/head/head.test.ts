@@ -44,7 +44,7 @@ test('includes description based on Starlight `description` configuration', () =
 });
 
 test('includes description based on page `description` frontmatter field if provided', () => {
-	const head = getTestHead([], routes[1]!);
+	const head = getTestHead([], routes[1]);
 	expect(head).toContainEqual({
 		tag: 'meta',
 		attrs: {
@@ -80,6 +80,17 @@ test('merges two <link rel="canonical" href="" /> tags', () => {
 	} as const;
 	const head = getTestHead([customLink]);
 	expect(head.filter((tag) => tag.tag === 'link' && tag.attrs?.rel === 'canonical')).toEqual([
+		customLink,
+	]);
+});
+
+test('merges two <link rel="sitemap" href="" /> tags', () => {
+	const customLink = {
+		tag: 'link',
+		attrs: { rel: 'sitemap', href: '/sitemap-custom.xml' },
+	} as const;
+	const head = getTestHead([customLink]);
+	expect(head.filter((tag) => tag.tag === 'link' && tag.attrs?.rel === 'sitemap')).toEqual([
 		customLink,
 	]);
 });
@@ -128,6 +139,8 @@ describe.each([['name'], ['property'], ['http-equiv']])(
 test('sorts head by tag importance', () => {
 	const head = getTestHead();
 
+	// `expect.objectContaining` returns `any`.
+	/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 	const expectedHeadStart = [
 		// Important meta tags
 		{ tag: 'meta', attrs: { charset: 'utf-8' } },
@@ -150,6 +163,7 @@ test('sorts head by tag importance', () => {
 		{ tag: 'meta', attrs: expect.objectContaining({ name: 'x' }) },
 		{ tag: 'meta', attrs: expect.objectContaining({ property: 'x' }) },
 	];
+	/* eslint-enable @typescript-eslint/no-unsafe-assignment */
 
 	expect(head.slice(-expectedHeadEnd.length)).toEqual(expectedHeadEnd);
 });
